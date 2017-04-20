@@ -17,4 +17,5 @@ public interface IObservableData {
     void registerObserver(IObserver observer);
     void refresh();
     ArrayList<ImageURLs> getData();
+    void addExcludedImage(int position);
 }

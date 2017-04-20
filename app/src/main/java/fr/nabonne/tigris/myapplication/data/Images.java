@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 /**
  * Created by tigris on 4/20/17.
@@ -27,6 +28,7 @@ public class Images implements IObservableData{
     int mNextPage =-1;
     IObserver mObserver;
     ArrayList<ImageURLs> data;
+    TreeSet<String> exclusions = new TreeSet<String>();// assuming it's not expected to survive application destruction
 
     @Override
     public void registerObserver(IObserver observer) {
@@ -47,6 +49,13 @@ public class Images implements IObservableData{
     @Override
     public ArrayList<ImageURLs> getData() {
         return data;
+    }
+
+    @Override
+    public void addExcludedImage(int position) {
+        exclusions.add(data.get(position).thumbnail);
+        data.remove(position);// we're safe because AsyncTask only modifies the data on onPostExecute (main/ui thread)
+        mObserver.notifyItemRemoved(position);
     }
 
     //AsyncTask to do network work
@@ -103,7 +112,8 @@ public class Images implements IObservableData{
                 for (int i=0; i<perPage; i++) {
                     final String urlT = ((JSONObject)photo.get(i)).getString("url_t");
                     final String urlL = ((JSONObject)photo.get(i)).getString("url_l");
-                    if (!urlL.isEmpty() && !urlT.isEmpty()) {
+                    if (!urlL.isEmpty() && !urlT.isEmpty()
+                            && !dataStore.exclusions.contains(urlT)) {
 //                        dataStore.data.add(new ImageURLs(urlT, urlL));
 //                        final int index = dataStore.data.size()-1;
 //                        dataStore.mObserver.notifyItemInserted(index);

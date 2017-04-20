@@ -21,21 +21,16 @@ import fr.nabonne.tigris.myapplication.data.IObservableData;
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
     Context mAppContext;
     IObservableData data;
-    private View.OnClickListener mCommonClickListener;
 
-    private static String[] testURLs = {
-            "https://farm3.staticflickr.com/2849/33969447032_727bc1954a_t.jpg",
-            "https://farm3.staticflickr.com/2867/33969443852_81af9555d9_b.jpg",
-            "https://farm4.staticflickr.com/3931/33742057300_0398372013_t.jpg"
-    };
+//    private static String[] testURLs = {
+//            "https://farm3.staticflickr.com/2849/33969447032_727bc1954a_t.jpg",
+//            "https://farm3.staticflickr.com/2867/33969443852_81af9555d9_b.jpg",
+//            "https://farm4.staticflickr.com/3931/33742057300_0398372013_t.jpg"
+//    };
 
     public MyRecyclerViewAdapter(Context applicationContext, IObservableData data) {
         mAppContext = applicationContext;
         this.data = data;// observable will call observer methods to notify of updates
-    }
-
-    public void setCommonClickListener(View.OnClickListener l) {
-        mCommonClickListener = l;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -62,7 +57,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         ViewHolder holder2 = (ViewHolder) holder ;
@@ -73,19 +68,21 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
                 .centerCrop()
                 .into(holder2.mImageView);
 
-        //click listener:
-        if (mCommonClickListener == null)
-            return;
-        else
-            holder2.itemView.setOnClickListener(mCommonClickListener);
-//        final String dataSetId = mDataset.get(position);//not actually an ID, we're traversing the list
-//        holder2.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //do not use position to ID the item, as IT MAY HAVE CHANGED
-//                MyRecyclerViewAdapter.this.removeItem(dataSetId);
-//            }
-//        });
+        holder2.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO: implement dialog
+                data.addExcludedImage(position);
+                return true;
+            }
+        });
+        holder2.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: implement fullrez activity
+//                v.getContext().startActivity(FullRezImgActivity.class);
+            }
+        });
     }
 
     @Override
