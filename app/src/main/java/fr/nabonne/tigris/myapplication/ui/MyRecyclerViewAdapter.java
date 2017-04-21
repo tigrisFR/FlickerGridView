@@ -1,7 +1,12 @@
 package fr.nabonne.tigris.myapplication.ui;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,8 +77,21 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
         holder2.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                // TODO: implement dialog
-                data.addExcludedImage(position);
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                builder.setMessage(R.string.dialog_message_remove_img);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        data.addExcludedImage(position);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
             }
         });
