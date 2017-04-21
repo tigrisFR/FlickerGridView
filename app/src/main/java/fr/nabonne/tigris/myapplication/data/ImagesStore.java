@@ -69,10 +69,18 @@ public class ImagesStore implements IObservableData{
     }
 
     @Override
-    public void addExcludedImage(int position) {
-        exclusions.add(data.get(position).thumbnail);
-        data.remove(position);// we're safe because AsyncTask only modifies the data on onPostExecute (main/ui thread)
-        mObserver.notifyItemRemoved(position);
+    public void addExcludedImage(String id) {
+        // First exclude from future download
+        exclusions.add(id);
+        // Now remove from the current data
+        // which is safe to do because AsyncTask only modifies the data on onPostExecute (main/ui thread)
+        int i;
+        for (i=0; i<data.size(); i++) {
+            if (id.equals(data.get(i).id))
+                break;
+        }
+        data.remove(i);
+        mObserver.notifyItemRemoved(i);
     }
 
     //AsyncTask to do network work
@@ -132,7 +140,8 @@ public class ImagesStore implements IObservableData{
                     final String title = ((JSONObject)photo.get(i)).getString("title");
                     final String id = ((JSONObject)photo.get(i)).getString("id");
                     if (!urlL.isEmpty() && !urlT.isEmpty()
-                            && !dataStore.exclusions.contains(urlT)) {
+                            && !title.isEmpty() && !id.isEmpty()
+                            && !dataStore.exclusions.contains(id)) {
                         dataStore.data.add(new ImageData(urlT, urlL, title, id));
                         final int index = dataStore.data.size()-1;
                         dataStore.mObserver.notifyItemInserted(index);
@@ -149,59 +158,4 @@ public class ImagesStore implements IObservableData{
             }
         }
     }
-
-//    public String queryFlickrPage(int page) {
-//        URL url = null;
-//        try {
-//            url = new URL(urlPrefix + page + urlSuffix);
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//        HttpURLConnection urlConnection = null;
-//
-//        try {
-//            urlConnection = (HttpURLConnection) url.openConnection();
-//            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-//            // json is UTF-8 by default
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"), 8);
-//            StringBuilder sb = new StringBuilder();
-//
-//            String line = null;
-//            while ((line = reader.readLine()) != null)
-//            {
-//                sb.append(line + "\n");
-//            }
-//            return sb.toString();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            urlConnection.disconnect();
-//        }
-//        return null;
-//    }
-//
-//    public void mergeDataFromJSON(String s) {
-//        try {
-//            final JSONObject respJSON = new JSONObject(s);
-//            JSONObject photos = respJSON.getJSONObject("photos");
-//            mPages = photos.getInt("pages");
-//            final int perPage = photos.getInt("perpage");
-//            if (data == null)
-//                data = new ArrayList<ImageData>(perPage);
-//            JSONArray photo = photos.getJSONArray("photo");
-//            //traverse array and extract urls
-//            for (int i=0; i<perPage; i++) {
-//                final String urlT = ((JSONObject)photo.get(i)).getString("url_t");
-//                final String urlL = ((JSONObject)photo.get(i)).getString("url_l");
-//                if (!urlL.isEmpty() && !urlT.isEmpty()) {
-//                    data.add(new ImageData(urlT, urlL));
-//                    final int index = data.size()-1;
-//                    mObserver.notifyItemInserted(index);
-//                }
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

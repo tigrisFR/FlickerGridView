@@ -1,8 +1,11 @@
 package fr.nabonne.tigris.myapplication.ui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,7 +63,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         ViewHolder holder2 = (ViewHolder) holder ;
@@ -70,7 +73,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
                 .resize(120, 120)
                 .centerCrop()
                 .into(holder2.mImageView);
-
+        // construct click listener for item removal
+        final String data_id = data.getData().get(position).id;
         holder2.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -79,7 +83,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
                 builder.setMessage(R.string.dialog_message_remove_img);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        data.addExcludedImage(position);
+                        data.addExcludedImage(data_id);
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -92,13 +96,16 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
                 return true;
             }
         });
+        // construct long click listener for switch to fullRez activity
+        final String urlL = data.getData().get(position).fullRez;
+        final String title = data.getData().get(position).title;
         holder2.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: implement fullrez activity
                 Intent fullRezImgIntent = new Intent(v.getContext(), FullRezImgActivity.class);
-                fullRezImgIntent.putExtra("urlL", data.getData().get(position).fullRez);
-                fullRezImgIntent.putExtra("title", data.getData().get(position).title);
+                fullRezImgIntent.putExtra("urlL", urlL);
+                fullRezImgIntent.putExtra("title", title);
                 v.getContext().startActivity(fullRezImgIntent);
             }
         });
