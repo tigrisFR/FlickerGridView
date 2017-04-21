@@ -112,12 +112,14 @@ public class Images implements IObservableData{
                 for (int i=0; i<perPage; i++) {
                     final String urlT = ((JSONObject)photo.get(i)).getString("url_t");
                     final String urlL = ((JSONObject)photo.get(i)).getString("url_l");
+                    final String title = ((JSONObject)photo.get(i)).getString("title");
+                    final String id = ((JSONObject)photo.get(i)).getString("id");
                     if (!urlL.isEmpty() && !urlT.isEmpty()
                             && !dataStore.exclusions.contains(urlT)) {
 //                        dataStore.data.add(new ImageURLs(urlT, urlL));
 //                        final int index = dataStore.data.size()-1;
 //                        dataStore.mObserver.notifyItemInserted(index);
-                        dataStore.data.add(0, new ImageURLs(urlT, urlL));
+                        dataStore.data.add(0, new ImageURLs(urlT, urlL, title, id));
                         dataStore.mObserver.notifyItemInserted(0);
                     }
                 }

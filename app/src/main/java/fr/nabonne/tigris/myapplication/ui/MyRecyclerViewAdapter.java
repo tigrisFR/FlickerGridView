@@ -1,6 +1,7 @@
 package fr.nabonne.tigris.myapplication.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,7 +81,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 // TODO: implement fullrez activity
-//                v.getContext().startActivity(FullRezImgActivity.class);
+                Intent fullRezImgIntent = new Intent(v.getContext(), FullRezImgActivity.class);
+                fullRezImgIntent.putExtra("urlL", data.getData().get(position).fullRez);
+                fullRezImgIntent.putExtra("title", data.getData().get(position).title);
+                v.getContext().startActivity(fullRezImgIntent);
             }
         });
     }
