@@ -1,11 +1,8 @@
-package fr.nabonne.tigris.myapplication.ui;
+package fr.nabonne.tigris.trials.flckrGrd.ui;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,8 +14,8 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import fr.nabonne.tigris.myapplication.R;
-import fr.nabonne.tigris.myapplication.data.IObservableData;
+import fr.nabonne.tigris.trials.R;
+import fr.nabonne.tigris.trials.flckrGrd.data.IObservableData;
 
 /**
  * Created by tigris on 4/20/17.

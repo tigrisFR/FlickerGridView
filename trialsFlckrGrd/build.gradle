@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "fr.nabonne.tigris.myapplication"
+        applicationId "fr.nabonne.tigris.trials.flckrGrd"
 
         minSdkVersion 15
         targetSdkVersion 25

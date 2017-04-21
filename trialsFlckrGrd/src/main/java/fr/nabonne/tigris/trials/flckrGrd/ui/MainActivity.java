@@ -1,4 +1,4 @@
-package fr.nabonne.tigris.myapplication.ui;
+package fr.nabonne.tigris.trials.flckrGrd.ui;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,9 +8,9 @@ import android.support.v7.widget.RecyclerView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import fr.nabonne.tigris.myapplication.MyApp;
-import fr.nabonne.tigris.myapplication.R;
-import fr.nabonne.tigris.myapplication.data.IObservableData;
+import fr.nabonne.tigris.trials.flckrGrd.MyApp;
+import fr.nabonne.tigris.trials.R;
+import fr.nabonne.tigris.trials.flckrGrd.data.IObservableData;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
     @BindView(R.id.swipeRefreshLayout)

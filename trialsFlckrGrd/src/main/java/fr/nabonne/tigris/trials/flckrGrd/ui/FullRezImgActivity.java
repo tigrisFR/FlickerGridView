@@ -1,4 +1,4 @@
-package fr.nabonne.tigris.myapplication.ui;
+package fr.nabonne.tigris.trials.flckrGrd.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import fr.nabonne.tigris.myapplication.R;
+import fr.nabonne.tigris.trials.R;
 
 /**
  * Created by tigris on 4/20/17.

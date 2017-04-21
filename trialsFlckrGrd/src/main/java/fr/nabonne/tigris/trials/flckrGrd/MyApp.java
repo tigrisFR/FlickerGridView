@@ -1,8 +1,8 @@
-package fr.nabonne.tigris.myapplication;
+package fr.nabonne.tigris.trials.flckrGrd;
 
 import android.app.Application;
 
-import fr.nabonne.tigris.myapplication.data.ImagesStore;
+import fr.nabonne.tigris.trials.flckrGrd.data.ImagesStore;
 
 /**
  * Created by tigris on 4/20/17.
