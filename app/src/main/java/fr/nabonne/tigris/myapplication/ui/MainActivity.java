@@ -49,6 +49,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
 
             @Override
+            public void notifyDataSetChanged() {
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
             public void onRefreshed() {
                 mSwipeRefreshLayout.setRefreshing(false);
             }

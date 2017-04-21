@@ -24,8 +24,8 @@ import java.util.TreeSet;
 public class ImagesStore implements IObservableData{
     final static String urlPrefix = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=949e98778755d1982f537d56236bbb42&tags=tile&format=json&nojsoncallback=1&page=";
     final static String urlSuffix = "&extras=url_t,url_l";
-    int mPages =-1;
-    int mNextPage =-1;
+    int mPages = -1;
+    int mNextPage = 1;
     IObserver mObserver;
     ArrayList<ImageData> data;
     TreeSet<String> exclusions = new TreeSet<String>();// assuming it's not expected to survive application destruction
@@ -35,15 +35,32 @@ public class ImagesStore implements IObservableData{
         mObserver = observer;
     }
 
-    public void refresh() {
-        if (mNextPage == -1)
-            mNextPage = 1;
-        else if (mNextPage > mPages) {
+    /**
+     * Calls for an additional set(page) of data to be retrieved from the endpoint
+     */
+    @Override
+    public void getMoreData() {
+        if (mNextPage == 1)
+            ;// nothing to do
+        else if (mNextPage > mPages) {// mPages should be known by now
             // we've reached the end we're done
             mObserver.onRefreshed();
             return;
         }
         new QueryTask(this).execute(new String[] {urlPrefix + mNextPage + urlSuffix});
+    }
+
+    /**
+     * Calls for a refresh of the data. Current data will be wiped out
+     */
+    @Override
+    public void refresh() {
+        mNextPage = 1;
+        if (data != null) {
+            data.clear();
+            mObserver.notifyDataSetChanged();
+        }
+        getMoreData();
     }
 
     @Override
@@ -116,11 +133,11 @@ public class ImagesStore implements IObservableData{
                     final String id = ((JSONObject)photo.get(i)).getString("id");
                     if (!urlL.isEmpty() && !urlT.isEmpty()
                             && !dataStore.exclusions.contains(urlT)) {
-//                        dataStore.data.add(new ImageData(urlT, urlL));
-//                        final int index = dataStore.data.size()-1;
-//                        dataStore.mObserver.notifyItemInserted(index);
-                        dataStore.data.add(0, new ImageData(urlT, urlL, title, id));
-                        dataStore.mObserver.notifyItemInserted(0);
+                        dataStore.data.add(new ImageData(urlT, urlL, title, id));
+                        final int index = dataStore.data.size()-1;
+                        dataStore.mObserver.notifyItemInserted(index);
+//                        dataStore.data.add(0, new ImageData(urlT, urlL, title, id));
+//                        dataStore.mObserver.notifyItemInserted(0);
                     }
                 }
             } catch (JSONException e) {
