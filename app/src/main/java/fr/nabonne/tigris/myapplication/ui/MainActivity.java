@@ -11,7 +11,6 @@ import butterknife.ButterKnife;
 import fr.nabonne.tigris.myapplication.MyApp;
 import fr.nabonne.tigris.myapplication.R;
 import fr.nabonne.tigris.myapplication.data.IObservableData;
-import fr.nabonne.tigris.myapplication.data.Images;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
     @BindView(R.id.swipeRefreshLayout)

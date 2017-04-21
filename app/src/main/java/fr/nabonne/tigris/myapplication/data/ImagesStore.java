@@ -21,13 +21,13 @@ import java.util.TreeSet;
  * Created by tigris on 4/20/17.
  */
 
-public class Images implements IObservableData{
+public class ImagesStore implements IObservableData{
     final static String urlPrefix = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=949e98778755d1982f537d56236bbb42&tags=tile&format=json&nojsoncallback=1&page=";
     final static String urlSuffix = "&extras=url_t,url_l";
     int mPages =-1;
     int mNextPage =-1;
     IObserver mObserver;
-    ArrayList<ImageURLs> data;
+    ArrayList<ImageData> data;
     TreeSet<String> exclusions = new TreeSet<String>();// assuming it's not expected to survive application destruction
 
     @Override
@@ -47,7 +47,7 @@ public class Images implements IObservableData{
     }
 
     @Override
-    public ArrayList<ImageURLs> getData() {
+    public ArrayList<ImageData> getData() {
         return data;
     }
 
@@ -60,9 +60,9 @@ public class Images implements IObservableData{
 
     //AsyncTask to do network work
     public static class QueryTask extends AsyncTask<String, Object, String> {
-        private Images dataStore;
+        private ImagesStore dataStore;
 
-        public QueryTask(Images dataStore) {
+        public QueryTask(ImagesStore dataStore) {
             this.dataStore = dataStore;
         }
 
@@ -106,7 +106,7 @@ public class Images implements IObservableData{
                 dataStore.mPages = photos.getInt("pages");
                 final int perPage = photos.getInt("perpage");
                 if (dataStore.data == null)
-                    dataStore.data = new ArrayList<ImageURLs>(perPage);
+                    dataStore.data = new ArrayList<ImageData>(perPage);
                 JSONArray photo = photos.getJSONArray("photo");
                 //traverse array and extract urls
                 for (int i=0; i<perPage; i++) {
@@ -116,10 +116,10 @@ public class Images implements IObservableData{
                     final String id = ((JSONObject)photo.get(i)).getString("id");
                     if (!urlL.isEmpty() && !urlT.isEmpty()
                             && !dataStore.exclusions.contains(urlT)) {
-//                        dataStore.data.add(new ImageURLs(urlT, urlL));
+//                        dataStore.data.add(new ImageData(urlT, urlL));
 //                        final int index = dataStore.data.size()-1;
 //                        dataStore.mObserver.notifyItemInserted(index);
-                        dataStore.data.add(0, new ImageURLs(urlT, urlL, title, id));
+                        dataStore.data.add(0, new ImageData(urlT, urlL, title, id));
                         dataStore.mObserver.notifyItemInserted(0);
                     }
                 }
@@ -171,14 +171,14 @@ public class Images implements IObservableData{
 //            mPages = photos.getInt("pages");
 //            final int perPage = photos.getInt("perpage");
 //            if (data == null)
-//                data = new ArrayList<ImageURLs>(perPage);
+//                data = new ArrayList<ImageData>(perPage);
 //            JSONArray photo = photos.getJSONArray("photo");
 //            //traverse array and extract urls
 //            for (int i=0; i<perPage; i++) {
 //                final String urlT = ((JSONObject)photo.get(i)).getString("url_t");
 //                final String urlL = ((JSONObject)photo.get(i)).getString("url_l");
 //                if (!urlL.isEmpty() && !urlT.isEmpty()) {
-//                    data.add(new ImageURLs(urlT, urlL));
+//                    data.add(new ImageData(urlT, urlL));
 //                    final int index = data.size()-1;
 //                    mObserver.notifyItemInserted(index);
 //                }

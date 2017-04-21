@@ -1,7 +1,5 @@
 package fr.nabonne.tigris.myapplication.data;
 
-import android.support.v7.widget.RecyclerView;
-
 import java.util.ArrayList;
 
 /**
@@ -16,6 +14,6 @@ public interface IObservableData {
     }
     void registerObserver(IObserver observer);
     void refresh();
-    ArrayList<ImageURLs> getData();
+    ArrayList<ImageData> getData();
     void addExcludedImage(int position);
 }

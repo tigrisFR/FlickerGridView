@@ -2,7 +2,7 @@ package fr.nabonne.tigris.myapplication;
 
 import android.app.Application;
 
-import fr.nabonne.tigris.myapplication.data.Images;
+import fr.nabonne.tigris.myapplication.data.ImagesStore;
 
 /**
  * Created by tigris on 4/20/17.
@@ -10,15 +10,15 @@ import fr.nabonne.tigris.myapplication.data.Images;
 
 public class MyApp extends Application{
 
-    private Images mDataStore;
+    private ImagesStore mDataStore;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mDataStore = new Images();
+        mDataStore = new ImagesStore();
     }
 
-    public Images getDataStore() {
+    public ImagesStore getDataStore() {
         return mDataStore;
     }
 }
