@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Trials FlckrGrd</string>
     <string name="dialog_message_remove_img">Remove image from the grid?</string>
     <string name="yes">yes</string>
     <string name="cancel">cancel</string>
