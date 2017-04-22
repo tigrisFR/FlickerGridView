@@ -38,7 +38,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
         this.data = data;// observable will call observer methods to notify of updates
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.recyclerview_element)
         ImageView mImageView;
 
@@ -73,7 +73,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
                 .centerCrop()
                 .into(holder2.mImageView);
 
-        // construct click listener for item removal
+        // construct long click listener for switch to fullRez activity
         holder2.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -83,35 +83,20 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
                 final int position = holder.getAdapterPosition();
                 if (position == NO_POSITION)// adapter position unavailable (e.g. layout recalculation on data set changes)
                     return false;
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-
-                builder.setMessage(R.string.dialog_message_remove_img);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        data.addExcludedImage(position);
-                    }
-                });
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                return true;
+                return MyRecyclerViewAdapter.this.onLongClick(v, position);
             }
         });
-        // construct long click listener for switch to fullRez activity
-        final String urlL = data.getData().get(positionAtBindTime).fullRez;
-        final String title = data.getData().get(positionAtBindTime).title;
+        // construct click listener for item removal
         holder2.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: implement fullrez activity
-                Intent fullRezImgIntent = new Intent(v.getContext(), FullRezImgActivity.class);
-                fullRezImgIntent.putExtra("urlL", urlL);
-                fullRezImgIntent.putExtra("title", title);
-                v.getContext().startActivity(fullRezImgIntent);
+                // This ViewHolder's position might have changed since bind time
+                // (because of removal of an item at a lower index) get an
+                // updated one.
+                final int position = holder.getAdapterPosition();
+                if (position == NO_POSITION)// adapter position unavailable (e.g. layout recalculation on data set changes)
+                    return;
+                MyRecyclerViewAdapter.this.onClick(v, position);
             }
         });
 
@@ -120,8 +105,39 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
             data.getMoreData();
     }
 
+
+
     @Override
     public int getItemCount() {
         return data.getData()==null? 0:data.getData().size();
+    }
+
+    public void onClick(View v, int position) {
+        // construct long click listener for switch to fullRez activity
+        final String urlL = data.getData().get(position).fullRez;
+        final String title = data.getData().get(position).title;
+        Intent fullRezImgIntent = new Intent(v.getContext(), FullRezImgActivity.class);
+        fullRezImgIntent.putExtra("urlL", urlL);
+        fullRezImgIntent.putExtra("title", title);
+        v.getContext().startActivity(fullRezImgIntent);
+    }
+
+    public boolean onLongClick(View v, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+        builder.setMessage(R.string.dialog_message_remove_img);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                data.addExcludedImage(position);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return true;
     }
 }
