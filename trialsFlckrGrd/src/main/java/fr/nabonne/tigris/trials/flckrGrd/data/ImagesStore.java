@@ -69,18 +69,13 @@ public class ImagesStore implements IObservableData{
     }
 
     @Override
-    public void addExcludedImage(String id) {
+    public void addExcludedImage(int index) {
         // First exclude from future download
-        exclusions.add(id);
+        exclusions.add(data.get(index).id);
         // Now remove from the current data
         // which is safe to do because AsyncTask only modifies the data on onPostExecute (main/ui thread)
-        int i;
-        for (i=0; i<data.size(); i++) {
-            if (id.equals(data.get(i).id))
-                break;
-        }
-        data.remove(i);
-        mObserver.notifyItemRemoved(i);
+        data.remove(index);
+        mObserver.notifyItemRemoved(index);
     }
 
     //AsyncTask to do network work

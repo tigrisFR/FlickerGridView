@@ -17,5 +17,5 @@ public interface IObservableData {
     void refresh();
     void getMoreData();
     ArrayList<ImageData> getData();
-    void addExcludedImage(String id);
+    void addExcludedImage(int index);
 }

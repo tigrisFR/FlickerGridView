@@ -17,6 +17,8 @@ import butterknife.ButterKnife;
 import fr.nabonne.tigris.trials.R;
 import fr.nabonne.tigris.trials.flckrGrd.data.IObservableData;
 
+import static android.support.v7.widget.RecyclerView.NO_POSITION;
+
 /**
  * Created by tigris on 4/20/17.
  */
@@ -60,27 +62,33 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int positionAtBindTime) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         ViewHolder holder2 = (ViewHolder) holder ;
 
         Picasso.with(mAppContext)
-                .load(data.getData().get(position).thumbnail)
+                .load(data.getData().get(positionAtBindTime).thumbnail)
                 .resize(120, 120)
                 .centerCrop()
                 .into(holder2.mImageView);
+
         // construct click listener for item removal
-        final String data_id = data.getData().get(position).id;
         holder2.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                // This ViewHolder's position might have changed since bind time
+                // (because of removal of an item at a lower index) get an
+                // updated one.
+                final int position = holder.getAdapterPosition();
+                if (position == NO_POSITION)// adapter position unavailable (e.g. layout recalculation on data set changes)
+                    return false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
                 builder.setMessage(R.string.dialog_message_remove_img);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        data.addExcludedImage(data_id);
+                        data.addExcludedImage(position);
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -94,8 +102,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
             }
         });
         // construct long click listener for switch to fullRez activity
-        final String urlL = data.getData().get(position).fullRez;
-        final String title = data.getData().get(position).title;
+        final String urlL = data.getData().get(positionAtBindTime).fullRez;
+        final String title = data.getData().get(positionAtBindTime).title;
         holder2.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +116,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
         });
 
         // Request more data when we reach the last item
-        if (position >= data.getData().size()-1)
+        if (positionAtBindTime >= data.getData().size()-1)
             data.getMoreData();
     }
 
