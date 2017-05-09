@@ -69,7 +69,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter {
 
         Picasso.with(mAppContext)
                 .load(data.getData().get(positionAtBindTime).thumbnail)
-                .resize(120, 120)
+//                .resize(120, 120)
+//                .centerCrop()
+                .fit()
                 .centerCrop()
                 .into(holder2.mImageView);
 
